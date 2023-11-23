@@ -1,0 +1,94 @@
+Copy code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+
+  <h1>Shopping Cart</h1>
+
+  <div id="cart">
+    <!-- Cart items will be dynamically added here -->
+  </div>
+
+  <script>
+    // Sample data - replace this with your actual data
+    const items = [
+      { id: 1, name: 'Item 1', price: 10 },
+      { id: 2, name: 'Item 2', price: 20 },
+      { id: 3, name: 'Item 3', price: 30 }
+    ];
+
+    const cart = [];
+
+    function renderCart() {
+      const cartElement = document.getElementById('cart');
+      cartElement.innerHTML = ''; // Clear previous content
+
+      cart.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.innerHTML = `
+          <span>${item.name} - $${item.price}</span>
+          <button onclick="decreaseQuantity(${item.id})">-</button>
+          <span>${item.quantity}</span>
+          <button onclick="increaseQuantity(${item.id})">+</button>
+          <button onclick="removeItem(${item.id})">Remove</button>
+          <button onclick="toggleLike(${item.id})" class="${item.liked ? 'liked' : ''}">Like</button>
+        `;
+        cartElement.appendChild(itemElement);
+      });
+
+      // Display total price
+      const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+      cartElement.innerHTML += `<p>Total Price: $${totalPrice}</p>`;
+    }
+
+    function increaseQuantity(itemId) {
+      const item = cart.find(item => item.id === itemId);
+      if (item) {
+        item.quantity++;
+        renderCart();
+      }
+    }
+
+    function decreaseQuantity(itemId) {
+      const item = cart.find(item => item.id === itemId);
+      if (item && item.quantity > 1) {
+        item.quantity--;
+        renderCart();
+      }
+    }
+
+    function removeItem(itemId) {
+      const itemIndex = cart.findIndex(item => item.id === itemId);
+      if (itemIndex !== -1) {
+        cart.splice(itemIndex, 1);
+        renderCart();
+      }
+    }
+
+    function toggleLike(itemId) {
+      const item = cart.find(item => item.id === itemId);
+      if (item) {
+        item.liked = !item.liked;
+        renderCart();
+      }
+    }
+
+    // Initialize the cart with items
+    items.forEach(item => {
+      cart.push({ ...item, quantity: 1, liked: false });
+    });
+
+    // Initial rendering of the cart
+    renderCart();
+  </script>
+
+</body>
+</html>
